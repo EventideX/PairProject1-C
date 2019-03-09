@@ -3,6 +3,7 @@
 #define EXTERN extern "C" __declspec(dllexport)
 
 constexpr auto WORDCOUNTRESULT_SUCCEED = 0;
+constexpr auto WORDCOUNTRESULT_OPEN_FILE_FAILED = 1;
 
 struct WordCountWordAppear {
 	char *word;
