@@ -17,11 +17,11 @@ struct WordCountResult {
 	size_t words = 0;
 	size_t characters = 0;
 	size_t uniqueWords = 0;
-	struct WordCountWordAppear *wordAppears;
+	struct WordCountWordAppear * wordAppears = nullptr;
 };
 
 
-EXTERN WordCountResult CalculateWordCount(const char* fileName);
-EXTERN void ClearWordAppear(WordCountResult* resultStruct);
+EXTERN WordCountResult CalculateWordCount(const char * fileName);
+EXTERN void ClearWordAppear(WordCountResult * resultStruct);
 
 #undef EXTERN
