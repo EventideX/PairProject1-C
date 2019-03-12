@@ -12,28 +12,52 @@ using namespace std;
 int times[100005] = {};
 string word[100005] = {};
 
-int main(int argc,char* argv[])
-{
-	FILE *fp1,*fp2;
-	errno_t err;
-	if ((err = fopen_s(&fp1, argv[1], "r")) != 0) {
-		printf("Open file failed!");
-		exit(0);
-	}
-	if ((err = fopen_s(&fp2, "result.txt", "w")) != 0) {
-		printf("Open file failed!");
-		exit(0);
-	}
+int countChar(FILE *file) {
+	fseek(file, 0, SEEK_SET);
+	int cnt = 0;
 	char c;
-	int characters = 0;
-	int words = 0;
-	int lines = 0;
+	while (fscanf_s(file, "%c", &c, sizeof(char)) != EOF) {
+		cnt++;
+	}
+	return cnt;
+}
+
+int countWord(FILE *file) {
+	fseek(file, 0, SEEK_SET);
+	int cnt = 0;
+	int alacnt = 0;
+	char c;
+	while (fscanf_s(file, "%c", &c, sizeof(char)) != EOF) {
+		if (isalpha(c) || isdigit(c) && alacnt >= 4) alacnt++;
+		if (alacnt < 4 && !isalpha(c)) alacnt = 0;
+		if (alacnt >= 4 && !(isalpha(c) || isdigit(c))) alacnt = 0;
+		if (alacnt == 4) cnt++;
+	}
+	return cnt;
+}
+
+int countLine(FILE *file) {
+	fseek(file, 0, SEEK_SET);
+	int cnt = 0;
+	char c;
+	bool isline = false;
+	while (fscanf_s(file, "%c", &c, sizeof(char)) != EOF) {
+		if (!(c >= 0 && c <= 32 || c == 127)&&!isline) {
+			isline = true;
+			cnt++;
+		}
+		if (c == '\n') isline = false;
+	}
+	return cnt;
+}
+
+int countFre(FILE *file) {
+	fseek(file, 0, SEEK_SET);
+	char c;
+	string temp="";
 	int alacnt = 0;
 	int w_cnt = 0;
-	bool isline = false;
-	string temp = "";
-	while (fscanf_s(fp1, "%c", &c, sizeof(char)) != EOF) {
-		characters++;
+	while (fscanf_s(file, "%c", &c, sizeof(char)) != EOF) {
 		if (isalpha(c) || isdigit(c) && alacnt >= 4) {
 			temp += c;
 			alacnt++;
@@ -44,7 +68,7 @@ int main(int argc,char* argv[])
 		}
 		if (alacnt >= 4 && !(isalpha(c) || isdigit(c))) {
 			bool found = false;
-			for (int i = 0; i < temp.length(); i++)
+			for (int i = 0; i < (int)temp.length(); i++)
 				temp[i] = tolower(temp[i]);
 			for (int i = 0; i < w_cnt; i++) {
 				if (temp == word[i]) {
@@ -61,16 +85,6 @@ int main(int argc,char* argv[])
 			temp = "";
 			alacnt = 0;
 		}
-		if (alacnt == 4) words++;
-		if (!(c >= 0 && c <= 32 || c == 127)) {
-			if (!isline) {
-				isline = true;
-				lines++;
-			}
-		}
-		if (c == '\n') {
-			isline = false;
-		}
 	}
 	for (int i = 0; i < w_cnt - 1; i++) {
 		for (int j = 0; j < w_cnt - 1 - i; j++) {
@@ -86,15 +100,30 @@ int main(int argc,char* argv[])
 			}
 		}
 	}
-	fprintf(fp2,"characters: %d\n", characters);
-	fprintf(fp2,"words: %d\n", words);
-	fprintf(fp2,"lines: %d\n", lines);
+	return w_cnt;
+}
+
+int main(int argc,char* argv[])
+{
+	FILE *in,*out;
+	errno_t err;
+	if ((err = fopen_s(&in, argv[1], "r")) != 0) {
+		printf("Open file failed!");
+		exit(0);
+	}
+	if ((err = fopen_s(&out, "result.txt", "w")) != 0) {
+		printf("Open file failed!");
+		exit(0);
+	}
+	int w_cnt = countFre(in);
+	fprintf(out,"characters: %d\n", countChar(in));
+	fprintf(out,"words: %d\n", countWord(in));
+	fprintf(out,"lines: %d\n", countLine(in));
 	for (int i = w_cnt-1; i >=0; i--) {
-		fprintf(fp2, "<%s>: %d\n", word[i].c_str(),times[i]);
-		//cout << "<" << word[i] << ">: " << times[i]<<endl;
+		fprintf(out, "<%s>: %d\n", word[i].c_str(),times[i]);
 		if (i == w_cnt - 10) break;
 	}
-	fclose(fp1);
+	fclose(in);
     return 0;
 }
 

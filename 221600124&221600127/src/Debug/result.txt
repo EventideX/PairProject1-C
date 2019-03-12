@@ -1,4 +1,13 @@
-characters: 102
-words: 2
-lines: 2
-<abcdefghijklmnopqrstuvwxyz>: 2
+characters: 229
+words: 22
+lines: 1
+<airport>: 1
+<began>: 1
+<closed>: 1
+<dangerous>: 1
+<engine>: 1
+<extremely>: 1
+<eyes>: 1
+<flight>: 1
+<friend>: 1
+<frightened>: 1
