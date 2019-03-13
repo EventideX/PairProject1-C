@@ -86,6 +86,23 @@ int countFre(FILE *file) {
 			alacnt = 0;
 		}
 	}
+	if (alacnt >= 4) {
+		bool found = false;
+		for (int i = 0; i < (int)temp.length(); i++)
+			temp[i] = tolower(temp[i]);
+		for (int i = 0; i < w_cnt; i++) {
+			if (temp == word[i]) {
+				times[i]++;
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			word[w_cnt] = temp;
+			times[w_cnt]++;
+			w_cnt++;
+		}
+	}
 	for (int i = 0; i < w_cnt - 1; i++) {
 		for (int j = 0; j < w_cnt - 1 - i; j++) {
 			if (times[j] > times[j + 1] || times[j] == times[j + 1] && word[j] < word[j + 1]) {
