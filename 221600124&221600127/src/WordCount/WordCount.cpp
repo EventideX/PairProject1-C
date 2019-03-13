@@ -17,6 +17,7 @@ int countChar(FILE *file) {
 	int cnt = 0;
 	char c;
 	while (fscanf_s(file, "%c", &c, sizeof(char)) != EOF) {
+		if (c < 0 || c>255) continue;
 		cnt++;
 	}
 	return cnt;
@@ -28,6 +29,7 @@ int countWord(FILE *file) {
 	int alacnt = 0;
 	char c;
 	while (fscanf_s(file, "%c", &c, sizeof(char)) != EOF) {
+		if (c < 0 || c>255) continue;
 		if (isalpha(c) || isdigit(c) && alacnt >= 4) alacnt++;
 		if (alacnt < 4 && !isalpha(c)) alacnt = 0;
 		if (alacnt >= 4 && !(isalpha(c) || isdigit(c))) alacnt = 0;
@@ -42,6 +44,7 @@ int countLine(FILE *file) {
 	char c;
 	bool isline = false;
 	while (fscanf_s(file, "%c", &c, sizeof(char)) != EOF) {
+		if (c < 0 || c>255) continue;
 		if (!(c >= 0 && c <= 32 || c == 127)&&!isline) {
 			isline = true;
 			cnt++;
@@ -58,6 +61,7 @@ int countFre(FILE *file) {
 	int alacnt = 0;
 	int w_cnt = 0;
 	while (fscanf_s(file, "%c", &c, sizeof(char)) != EOF) {
+		if (c < 0 || c>255) continue;
 		if (isalpha(c) || isdigit(c) && alacnt >= 4) {
 			temp += c;
 			alacnt++;
