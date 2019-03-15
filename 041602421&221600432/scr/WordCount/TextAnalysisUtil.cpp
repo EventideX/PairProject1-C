@@ -1,20 +1,7 @@
 #include "pch.h"
 #include "TextAnalysisUtil.h"
-#include <fstream>
-#include <iostream>
-#include <unordered_map>
-#include <algorithm>
-#include <string>
-using namespace std;
-struct WordInf
-{
-	string word;
-	int count;
-	WordInf()
-	{
-		count = 0;
-	}
-};
+
+
 TextAnalysisUtil::TextAnalysisUtil()
 {
 }
@@ -37,18 +24,19 @@ bool isWordGreater(string str1, int n1, string str2, int n2)
 	}
 	else
 	{
-		flag = strcmp(str1.c_str(), str2.c_str()) > 0 ? true : false;
+		flag = strcmp(str1.c_str(), str2.c_str()) < 0 ? true : false;
 	}
 	return flag;
 }
 
-int TextAnalysisUtil::asciiCount()
+int TextAnalysisUtil::asciiCount(char * fileName)
 {
 	//调试用
-	ifstream fin("temp.txt");
+	ifstream fin(fileName);
 	if (!fin)
 	{
 		 cout<< "cuowu";
+		 return -1;
 	}
 	char ch;
 	int count=0;
@@ -57,7 +45,7 @@ int TextAnalysisUtil::asciiCount()
 		if(isAsascii(ch))
 			count++;
 	}
-	
+	fin.close();
 	return count;
 }
 
@@ -66,20 +54,31 @@ bool TextAnalysisUtil::isAsascii(char c)
 	return ((unsigned char)c & 0x80) == 0x80 ? false : true;
 }
 
-int TextAnalysisUtil::countLines(char * filename)
+int TextAnalysisUtil::countLines(char * fileName)
 {
 	ifstream ReadFile;
 	int n = 0;
 	string tmp;
-	ReadFile.open(filename, ios::in);
+	int len;
+	ReadFile.open(fileName, ios::in);
 	while (getline(ReadFile, tmp, '\n'))
 	{
-		if (tmp.length() == 0)
+		len = tmp.length();
+		for (int i = 0; i < len; i++)
 		{
-			continue;
+			if ((tmp[i] >= 0 && tmp[i] <= 32) || tmp[i] == 127)
+			{
+				continue;
+			}
+			else
+			{
+				n++;
+				break;
+			}
 
 		}
-		n++;
+
+
 
 
 	}
@@ -87,19 +86,19 @@ int TextAnalysisUtil::countLines(char * filename)
 	return n;
 }
 
-void TextAnalysisUtil::wordAnalysis()
+int TextAnalysisUtil::wordAnalysis(char * fileName, WordInf * tempArr)
 {
-	ifstream fin("D:\\搜狗高速下载\\测试样例\\测试样例\\input1.txt");
+	ifstream fin(fileName);
 	if (!fin)
 	{
 		cout << "cuowu";
+		return -1;
 	}
 	char ch;
 	string str;
 	int state = 0;
 	int nflag;
 	int wordCount = 0;
-	WordInf tempArr[10];
 	unordered_map<string, int> map;
 	while (fin.get(ch))
 	{
@@ -154,10 +153,7 @@ void TextAnalysisUtil::wordAnalysis()
 				//处理和存入字符串
 				transform(str.begin(), str.end(), str.begin(), ::tolower);
 				state = 0;
-				if (map[str] == 0)
-				{
-					wordCount++;
-				}
+				wordCount++;
 				map[str]++;
 			}
 			break;
@@ -165,6 +161,13 @@ void TextAnalysisUtil::wordAnalysis()
 			break;
 		}
 		
+	}
+	if (state == 3)
+	//处理最后跳出没来的及处理的字符串
+	{
+		transform(str.begin(), str.end(), str.begin(), ::tolower);
+		wordCount++;
+		map[str]++;
 	}
 	//遍历找出频率最高的top10单词
 	for (auto iter = map.begin(); iter != map.end(); iter++)
@@ -182,4 +185,6 @@ void TextAnalysisUtil::wordAnalysis()
 			}
 		}
 	}
+	fin.close();
+	return wordCount;
 }
