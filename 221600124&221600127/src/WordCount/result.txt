@@ -1,0 +1,13 @@
+characters: 13183
+words: 1322
+lines: 33
+<that>: 32
+<hand>: 16
+<network>: 16
+<pose>: 16
+<this>: 15
+<training>: 15
+<person>: 13
+<data>: 12
+<from>: 12
+<images>: 12
