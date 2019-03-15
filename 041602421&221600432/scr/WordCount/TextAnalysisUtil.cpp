@@ -35,7 +35,7 @@ int TextAnalysisUtil::asciiCount(char * fileName)
 	ifstream fin(fileName);
 	if (!fin)
 	{
-		 cout<< "cuowu";
+		 cout<< "文件打开失败";
 		 return -1;
 	}
 	char ch;
@@ -91,7 +91,7 @@ int TextAnalysisUtil::wordAnalysis(char * fileName, WordInf * tempArr)
 	ifstream fin(fileName);
 	if (!fin)
 	{
-		cout << "cuowu";
+		cout << "文件打开失败";
 		return -1;
 	}
 	char ch;
@@ -102,6 +102,10 @@ int TextAnalysisUtil::wordAnalysis(char * fileName, WordInf * tempArr)
 	unordered_map<string, int> map;
 	while (fin.get(ch))
 	{
+		if (ch < -1 || ch>255)
+		{
+			return -1;
+		}
 		switch (state)
 		{
 		case 0:
